@@ -41,12 +41,19 @@ resource "aws_subnet" "glb_pri_sub" {
     Name = "Pri_Subnet"
   }
 }
-
+resource "aws_network_interface" "glb_net" {
+  subnet_id = aws_subnet.glb_pri_sub.id
+  private_ip = "10.0.2.10"
+}
 resource "aws_instance" "global_inc" {
   ami = "ami-04ad2567c9e3d7893"
   instance_type = "t2.micro"
   tags = {
     Name = "webinstance"
     env = "devinc"
+  }
+  network_interface {
+    device_index         = 0
+    network_interface_id = aws_network_interface.glb_net.id
   }
 }
