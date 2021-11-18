@@ -52,8 +52,35 @@ resource "aws_instance" "global_inc" {
     Name = "webinstance"
     env = "devinc"
   }
-  network_interface {
-    device_index         = 0
-    network_interface_id = aws_network_interface.glb_net.id
+#  network_interface {
+#    device_index         = 0
+#    network_interface_id = aws_network_interface.glb_net.id
+#  }
+  security_groups = ["${aws_security_group.global_sg.id}"]
+}
+
+resource "aws_iam_role" "glb_iam_role" {
+  assume_role_policy = jsondecode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+  tags = {
+    Name = web_role
+    env = dev role
   }
+}
+
+resource "aws_iam_policy_attachment" "glb_policy_attach" {
+  name       = "policyattach"
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
+  roles = ["${aws_iam_role.glb_iam_role.id}"]
 }
