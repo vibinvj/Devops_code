@@ -1,7 +1,6 @@
 resource "aws_security_group" "global_sg" {
   name = var.sgname
   description = "allow ssh ports"
-  vpc_id = aws_vpc.globalvpc.id
   ingress {
     from_port = 22
     protocol  = "tcp"
@@ -24,13 +23,6 @@ resource "aws_vpc" "globalvpc" {
   tags = {
     Name = "testvpc"
     env = "dev"
-  }
-}
-resource "aws_subnet" "glb_pub_sub" {
-  cidr_block = "10.0.1.0/24"
-  vpc_id     = aws_vpc.globalvpc.id
-  tags = {
-    Name = "Pri_Subnet"
   }
 }
 
@@ -70,7 +62,6 @@ resource "aws_iam_policy_attachment" "glb_policy_attach" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
   roles = ["${aws_iam_role.glb_iam_role.id}"]
 }
-
 resource "aws_iam_instance_profile" "glb_ins_profile" {
   name = "ins_profile"
   role = aws_iam_role.glb_iam_role.name
