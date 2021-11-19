@@ -48,6 +48,7 @@ resource "aws_network_interface" "glb_net" {
 resource "aws_instance" "global_inc" {
   ami = "ami-04ad2567c9e3d7893"
   instance_type = "t2.micro"
+  iam_instance_profile = aws_iam_instance_profile.glb_ins_profile.id
   tags = {
     Name = "webinstance"
     env = "devinc"
@@ -56,11 +57,12 @@ resource "aws_instance" "global_inc" {
 #    device_index         = 0
 #    network_interface_id = aws_network_interface.glb_net.id
 #  }
-  security_groups = ["${aws_security_group.global_sg.id}"]
+  security_groups = ["${aws_security_group.global_sg.name}"]
 }
 
 resource "aws_iam_role" "glb_iam_role" {
-  assume_role_policy = jsondecode({
+  name = "web_role"
+  assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
@@ -73,14 +75,18 @@ resource "aws_iam_role" "glb_iam_role" {
       },
     ]
   })
+
   tags = {
-    Name = web_role
-    env = dev role
+    Name = "web-role"
   }
 }
-
 resource "aws_iam_policy_attachment" "glb_policy_attach" {
   name       = "policyattach"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2RoleforSSM"
   roles = ["${aws_iam_role.glb_iam_role.id}"]
+}
+
+resource "aws_iam_instance_profile" "glb_ins_profile" {
+  name = "ins_profile"
+  role = aws_iam_role.glb_iam_role.name
 }
