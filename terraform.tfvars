@@ -1,4 +1,4 @@
-sgname = "testsg"
+sgname = "devsg"
 ipblock = ["0.0.0.0/0", "10.0.1.0/24"]
 ins-tag = {
   name = "devinc"
