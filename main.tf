@@ -6,11 +6,13 @@ resource "aws_subnet" "glb_pub_sub" {
   cidr_block = var.pub_subnet
   vpc_id     = aws_vpc.glb_vpc.id
   tags = var.pub-sub-tag
+  availability_zone = "us-east-1a"
 }
 resource "aws_subnet" "glb_pri_sub" {
   cidr_block = var.pri_subnet
   vpc_id     = aws_vpc.glb_vpc.id
   tags = var.pri_sub_tag
+  availability_zone = "us-east-1b"
 }
 
 resource "aws_internet_gateway" "glb_igw" {
@@ -89,7 +91,8 @@ resource "aws_instance" "glb_ins" {
   ami = var.devami
   instance_type = var.ins_type
   subnet_id = "${aws_subnet.glb_pub_sub.id}"
-  private_ip = "10.0.1.10"
+  availability_zone = "us-east-1a"
+  private_ip = var.pub_pri_Ip
   vpc_security_group_ids = ["${aws_security_group.glb_sg.id}"]
   iam_instance_profile = aws_iam_instance_profile.glb_ins_profile.id
   associate_public_ip_address = true
@@ -97,9 +100,10 @@ resource "aws_instance" "glb_ins" {
 #  security_groups = ["${aws_security_group.glb_sg.name}"]
   tags = var.ins-tag
 }
+
 resource "aws_ebs_volume" "glb_ebs_vol" {
   availability_zone = "us-east-1a"
-  size = 3
+  size = 1
 }
 resource "aws_ebs_snapshot" "glb_ebs_snap" {
   volume_id = aws_ebs_volume.glb_ebs_vol.id
@@ -108,7 +112,7 @@ resource "aws_instance" "glb_pri_ins" {
   ami = var.devami
   instance_type = var.ins_type
   subnet_id = "${aws_subnet.glb_pri_sub.id}"
-  private_ip = "10.0.2.10"
+  private_ip = var.pri_pri_Ip
   vpc_security_group_ids = ["${aws_security_group.glb_sg.id}"]
   iam_instance_profile = aws_iam_instance_profile.glb_ins_profile.id
   key_name = aws_key_pair.glb_keypair.key_name
@@ -150,3 +154,4 @@ resource "aws_iam_instance_profile" "glb_ins_profile" {
   name = "webprofile"
   role = aws_iam_role.glb_ins_role.name
 }
+
