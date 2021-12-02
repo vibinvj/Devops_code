@@ -8,6 +8,19 @@ resource "aws_subnet" "glb_pub_sub" {
   tags = var.pub-sub-tag
   availability_zone = "us-east-1a"
 }
+resource "aws_subnet" "glb_pub_sub_2" {
+  cidr_block = "10.0.3.0/24"
+  vpc_id     = aws_vpc.glb_vpc.id
+  tags = var.pub-sub-tag
+  availability_zone = "us-east-1c"
+}
+resource "aws_subnet" "glb_pub_sub_3" {
+  cidr_block = "10.0.4.0/24"
+  vpc_id     = aws_vpc.glb_vpc.id
+  tags = var.pub-sub-tag
+  availability_zone = "us-east-1d"
+}
+
 resource "aws_subnet" "glb_pri_sub" {
   cidr_block = var.pri_subnet
   vpc_id     = aws_vpc.glb_vpc.id
@@ -31,6 +44,19 @@ resource "aws_route_table_association" "glb_RT_attach" {
   route_table_id = aws_route_table.glb_route.id
   subnet_id = aws_subnet.glb_pub_sub.id
 }
+resource "aws_route_table_association" "glb_Rt-attach1" {
+  route_table_id = aws_route_table.glb_route.id
+  subnet_id = aws_subnet.glb_pub_sub_2.id
+}
+resource "aws_route_table_association" "glb_rt-attach2" {
+  route_table_id = aws_route_table.glb_route.id
+  subnet_id = aws_subnet.glb_pub_sub_2.id
+}
+resource "aws_route_table_association" "glb_rt-attach3" {
+  route_table_id = aws_route_table.glb_route.id
+  subnet_id = aws_subnet.glb_pub_sub_3.id
+}
+
 resource "aws_route_table" "glb_pri_route" {
   vpc_id = aws_vpc.glb_vpc.id
   route {
