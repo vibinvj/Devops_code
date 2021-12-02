@@ -80,3 +80,13 @@ variable "routetag" {
     env = string
   })
 }
+
+variable "pub_pri_Ip" {
+  description = "used for pub ins pri ip"
+  type = string
+}
+
+variable "pri_pri_Ip" {
+  description = "used for pri ip"
+  type = string
+}

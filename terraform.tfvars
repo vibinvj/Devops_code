@@ -34,3 +34,5 @@ routetag = {
   name = "routedev"
   env = "dev"
 }
+pub_pri_Ip = "10.0.1.10"
+pri_pri_Ip = "10.0.2.10"
