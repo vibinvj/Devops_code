@@ -181,3 +181,4 @@ resource "aws_iam_instance_profile" "glb_ins_profile" {
   role = aws_iam_role.glb_ins_role.name
 }
 
+
