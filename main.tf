@@ -180,4 +180,3 @@ resource "aws_iam_instance_profile" "glb_ins_profile" {
   name = "webprofile"
   role = aws_iam_role.glb_ins_role.name
 }
-
